@@ -1,0 +1,29 @@
+[project]
+name = "matrix-market"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Gorka Eraña", email = "gera@baselifescience.com" }
+]
+requires-python = ">=3.10"
+dependencies = [
+    "beautifulsoup4>=4.12.3",
+    "fast-matrix-market>=1.7.6",
+    "httpx>=0.28.1",
+    "numpy>=2.2.1",
+]
+
+[project.scripts]
+matrix-market = "matrix_market:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "ipython>=8.31.0",
+    "pytest>=8.3.4",
+    "rich>=13.9.4",
+]

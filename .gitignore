@@ -1,0 +1,7 @@
+data/
+
+# Emacs files
+*~
+
+# Python stuff
+__pycache__/
