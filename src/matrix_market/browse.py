@@ -1,11 +1,12 @@
 import json
 from pathlib import Path
 import shutil
+from typing import Literal
 
 import httpx
 
 
-# __all__ = ["by_matrix_name"]
+Formats = Literal[".mtx.gz", ".rsa.gz"]
 
 
 MATH_MNIST_URL = httpx.URL("https://math.nist.gov")
@@ -22,15 +23,19 @@ def download_matrix(url: httpx.URL, save_path: Path) -> Path:
 
 
 # TODO: `matrix_name` could be a literal if all names are pre-downloaded
-def by_matrix_name(matrix_name: str, save_dir: Path | None = None) -> Path:
+def by_matrix_name(
+    matrix_name: str, save_dir: Path | None = None, format: Formats = ".mtx.gz"
+) -> Path:
     if save_dir is None:
         CACHE_DIR.mkdir(exist_ok=True, parents=True)
         save_dir = CACHE_DIR
-    save_path = save_dir / f"{matrix_name}.mtx.gz"
+    save_path = save_dir / f"{matrix_name}{format}"
     if save_path.exists():
         return save_path
     if matrix_name not in MATRIX_NAMES:
-        raise ValueError(f"{repr(matrix_name)} is incorrect, options are {', '.join(map(repr, matrix_name.keys()))}")
+        raise ValueError(
+            f"{repr(matrix_name)} is incorrect, options are {', '.join(map(repr, matrix_name.keys()))}"
+        )
     # A cache of downloaded matrices is maintained in `~/.cache/matrix_market`
     cache_path = CACHE_DIR / save_path.name
     if cache_path.exists():
@@ -39,5 +44,7 @@ def by_matrix_name(matrix_name: str, save_dir: Path | None = None) -> Path:
         else:
             shutil.copy2(cache_path, save_path)
     else:
-        download_matrix(MATH_MNIST_URL.copy_with(path=MATRIX_NAMES[matrix_name]), save_path)
+        download_matrix(
+            MATH_MNIST_URL.copy_with(path=MATRIX_NAMES[matrix_name]), save_path
+        )
     return save_path

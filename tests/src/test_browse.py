@@ -1,8 +1,13 @@
+from pathlib import Path
+from typing import get_args
+
 import pytest
 
 import matrix_market
-from matrix_market.browse import download_matrix, MATH_MNIST_URL, MATRIX_NAMES
+from matrix_market.browse import download_matrix, Formats, MATH_MNIST_URL, MATRIX_NAMES
 
+
+formats = get_args(Formats)
 
 # Just the smallest matrices
 matrix_names = [
@@ -17,9 +22,6 @@ matrix_names = [
     "ash85",
     "will57",
     "can___73",
-    "resources",
-    "browse",
-    "search",
     "dwt___66",
     "bcsstm02",
     "dwt___59",
@@ -34,41 +36,54 @@ matrix_names = [
     "jgl011",
     "jgl009",
 ]
-matrix_name = "bcspwr01"  # Just a small matrix
 
 
 @pytest.mark.parametrize("matrix_name", matrix_names)
-def test_by_matrix_name_no_save_dir_no_cache(matrix_name, tmp_path, monkeypatch):
+@pytest.mark.parametrize("format", formats)
+def test_by_matrix_name_no_save_dir_no_cache(
+    matrix_name, format, tmp_path, monkeypatch
+):
     cache_dir = tmp_path / ".cache" / "matrix_market"
     cache_dir.mkdir(exist_ok=True, parents=True)
     monkeypatch.setattr(matrix_market.browse, "CACHE_DIR", cache_dir)
-    matrix_market.browse.by_matrix_name(matrix_name)
-    assert (cache_dir / f"{matrix_name}.mtx.gz").exists()
+    matrix_market.browse.by_matrix_name(matrix_name, format=format)
+    assert (cache_dir / f"{matrix_name}{format}").exists()
 
 
 @pytest.mark.parametrize("matrix_name", matrix_names)
-def test_by_matrix_name_yes_save_dir_no_cache(matrix_name, tmp_path, monkeypatch):
+@pytest.mark.parametrize("format", formats)
+def test_by_matrix_name_yes_save_dir_no_cache(
+    matrix_name, format, tmp_path, monkeypatch
+):
     cache_dir = tmp_path / ".cache" / "matrix_market"
     cache_dir.mkdir(exist_ok=True, parents=True)
     monkeypatch.setattr(matrix_market.browse, "CACHE_DIR", cache_dir)
     save_dir = tmp_path / "data"
     save_dir.mkdir(exist_ok=True, parents=True)
-    save_path = save_dir / f"{matrix_name}.mtx.gz"
+    save_path = save_dir / f"{matrix_name}{format}"
     # TODO: check this does download data
-    matrix_market.browse.by_matrix_name(matrix_name, save_dir)
+    matrix_market.browse.by_matrix_name(matrix_name, save_dir, format)
     assert save_path.exists()
 
 
 @pytest.mark.parametrize("matrix_name", matrix_names)
-def test_by_matrix_name_yes_save_dir_warm_cache(matrix_name, tmp_path, monkeypatch):
+@pytest.mark.parametrize("format", formats)
+def test_by_matrix_name_yes_save_dir_warm_cache(
+    matrix_name, format, tmp_path, monkeypatch
+):
     cache_dir = tmp_path / ".cache" / "matrix_market"
     cache_dir.mkdir(exist_ok=True, parents=True)
     monkeypatch.setattr(matrix_market.browse, "CACHE_DIR", cache_dir)
-    cache_path = cache_dir / f"{matrix_name}.mtx.gz"
+    cache_path = cache_dir / f"{matrix_name}{format}"
     save_dir = tmp_path / "data"
     save_dir.mkdir(exist_ok=True, parents=True)
     save_path = save_dir / cache_path.name
-    download_matrix(MATH_MNIST_URL.copy_with(path=MATRIX_NAMES[matrix_name]), cache_path)
+    download_matrix(
+        MATH_MNIST_URL.copy_with(
+            path=str(Path(MATRIX_NAMES[matrix_name]).with_suffix(format))
+        ),
+        save_path,
+    )
     # TODO: check this does not download anything
-    matrix_market.browse.by_matrix_name(matrix_name, save_dir)
+    matrix_market.browse.by_matrix_name(matrix_name, save_dir, format)
     assert save_path.exists()
