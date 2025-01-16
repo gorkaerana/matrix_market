@@ -33,8 +33,9 @@ def by_matrix_name(
     if save_path.exists():
         return save_path
     if matrix_name not in MATRIX_NAMES:
+        matrix_name_options = ", ".join(map(repr, MATRIX_NAMES.keys()))
         raise ValueError(
-            f"{repr(matrix_name)} is incorrect, options are: {', '.join(map(repr, MATRIX_NAMES.keys()))}"
+            f"{repr(matrix_name)} is incorrect, options are: {matrix_name_options}"
         )
     # A cache of downloaded matrices is maintained in `~/.cache/matrix_market`
     cache_path = CACHE_DIR / save_path.name
@@ -45,6 +46,9 @@ def by_matrix_name(
             shutil.copy2(cache_path, save_path)
     else:
         download_matrix(
-            MATH_MNIST_URL.copy_with(path=MATRIX_NAMES[matrix_name]), save_path
+            MATH_MNIST_URL.copy_with(
+                path=str(Path(MATRIX_NAMES[matrix_name]).with_suffix(format))
+            ),
+            save_path,
         )
     return save_path
