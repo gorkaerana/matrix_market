@@ -5,6 +5,11 @@ import click
 from matrix_market import browse
 
 
+@click.group()
+def download_group():
+    pass
+
+
 @click.command(no_args_is_help=True)
 @click.option("--matrix-name", "-n", help="Name of the matrix to download")
 @click.option(
@@ -24,5 +29,7 @@ def download(
     click.echo(f"Downloaded {repr(matrix_name)} to {save_path} :)")
 
 
+download_group.add_command(download)
+
 if __name__ == "__main__":
-    download()
+    download_group()

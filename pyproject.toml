@@ -16,7 +16,7 @@ dependencies = [
 ]
 
 [project.scripts]
-matrix_market = "matrix_market.cli:download"
+matrix_market = "matrix_market.cli:download_group"
 
 [build-system]
 requires = ["hatchling"]
