@@ -34,7 +34,7 @@ def by_matrix_name(
         return save_path
     if matrix_name not in MATRIX_NAMES:
         raise ValueError(
-            f"{repr(matrix_name)} is incorrect, options are {', '.join(map(repr, matrix_name.keys()))}"
+            f"{repr(matrix_name)} is incorrect, options are: {', '.join(map(repr, MATRIX_NAMES.keys()))}"
         )
     # A cache of downloaded matrices is maintained in `~/.cache/matrix_market`
     cache_path = CACHE_DIR / save_path.name

@@ -2,7 +2,8 @@ from pathlib import Path
 import json
 
 from bs4 import BeautifulSoup
-import fast_matrix_market as fmm
+
+# import fast_matrix_market as fmm
 import httpx
 from rich.progress import track
 
@@ -25,7 +26,11 @@ if __name__ == "__main__":
             if path.stem in {"browse", "resources", "search"}:
                 continue
             save_path = SAVE_DIR / path.with_suffix(".mtx.gz").name
-            download_matrix(BASE_URL.copy_with(path=str(path.with_suffix(".mtx.gz"))), save_path)
+            download_matrix(
+                BASE_URL.copy_with(path=str(path.with_suffix(".mtx.gz"))), save_path
+            )
             matrix_names[path.stem] = href
 
-    (here / "src" / "matrix_market" / "matrix_names.json").write_text(json.dumps(matrix_names))
+    (here / "src" / "matrix_market" / "matrix_names.json").write_text(
+        json.dumps(matrix_names)
+    )
