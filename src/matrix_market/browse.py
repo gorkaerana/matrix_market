@@ -47,7 +47,7 @@ def by_matrix_name(
     else:
         download_matrix(
             MATH_MNIST_URL.copy_with(
-                path=str(Path(MATRIX_NAMES[matrix_name]).with_suffix(format))
+                path=Path(MATRIX_NAMES[matrix_name]).with_suffix(format).as_posix()
             ),
             save_path,
         )

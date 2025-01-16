@@ -80,7 +80,7 @@ def test_by_matrix_name_yes_save_dir_warm_cache(
     save_path = save_dir / cache_path.name
     download_matrix(
         MATH_MNIST_URL.copy_with(
-            path=str(Path(MATRIX_NAMES[matrix_name]).with_suffix(format))
+            path=Path(MATRIX_NAMES[matrix_name]).with_suffix(format).as_posix()
         ),
         save_path,
     )

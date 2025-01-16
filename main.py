@@ -27,7 +27,8 @@ if __name__ == "__main__":
                 continue
             save_path = SAVE_DIR / path.with_suffix(".mtx.gz").name
             download_matrix(
-                BASE_URL.copy_with(path=str(path.with_suffix(".mtx.gz"))), save_path
+                BASE_URL.copy_with(path=path.with_suffix(".mtx.gz")).as_posix(),
+                save_path,
             )
             matrix_names[path.stem] = href
 
